@@ -30,7 +30,7 @@ Esta es una API backend construida con **Node.js** que genera una API RESTful a 
 ## Uso
 
 1. **Inicia el servidor**:
-    npm start
+    npm run dev
 
 2. **Accede a la API:**:
     Una vez que el servidor esté corriendo, puedes realizar peticiones a los siguientes endpoints:
