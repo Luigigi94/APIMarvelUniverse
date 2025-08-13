@@ -29,7 +29,9 @@ app.get('/', (req, res) => {
             '/movies',
             '/movies/:title',
             '/user/register',
-            '/user/login'
+            '/user/login',
+            '/review',
+            '/reviews/:idOrTitle',
         ],
     });
 });
