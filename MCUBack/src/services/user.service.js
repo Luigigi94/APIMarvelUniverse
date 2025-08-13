@@ -18,11 +18,11 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
     return { salt, hash };
 }
 
-/*function verifyPassword(password, salt, storedHash) {
+function verifyPassword(password, salt, storedHash) {
     const check = crypto.scryptSync(password, salt, 64).toString('hex');
     // timingSafeEqual para evitar ataques de tiempo
     return crypto.timingSafeEqual(Buffer.from(check, 'hex'), Buffer.from(storedHash, 'hex'));
-}*/
+}
 
 export class UserService {
     static async register({ username, password }) {
@@ -39,7 +39,7 @@ export class UserService {
             username: username.trim(),
             password: hash,
             salt,
-            createdAt: new Date(),
+            createdAt: new Date().toISOString(),
         });
 
         return { id: _id, username };

@@ -8,5 +8,5 @@ export const User = Schema('User', {
     username:   { type: String, required: true },
     password:   { type: String, required: true }, // hash
     salt:       { type: String, required: true },
-    createdAt:  { type: Date,   required: true },
+    createdAt:  { type: String,   required: true },
 });

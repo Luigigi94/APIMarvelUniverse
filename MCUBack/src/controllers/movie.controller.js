@@ -1,4 +1,4 @@
-import { getAllMovieList, getMovie } from "../services/movie.service.js";
+import { getAllMovieList, getMovieBySlugOrTitleService } from "../services/movie.service.js";
 
 export async function getAllMovies(req, res) {
     try {
@@ -13,7 +13,7 @@ export async function getAllMovies(req, res) {
 export async function getMovieByTitle(req, res) {
     try {
         const { title } = req.params;
-        const movie = await getMovie(title);
+        const movie = await getMovieBySlugOrTitleService(title);
 
         if (!movie) {
             return res.status(404).json({error: 'No movie found with this id'});
