@@ -1,7 +1,9 @@
 import {EXCEL_MOVIES_PATH} from "../constants/paths.js";
-import { mapRowToMovie } from "../models/movie.model.js";
-import { slugify } from "../utils/slugify.js";
+import {mapRowToMovie} from "../models/movie.model.js";
+import {slugify} from "../utils/slugify.js";
 import XlsxPopulate from "xlsx-populate";
+import {MovieRepository} from "../repositories/movie.repository.js";
+import {ERR_MESSAGES} from "../constants/consts.js";
 
 
 export async function getAllMovieList() {
@@ -17,14 +19,32 @@ export async function getAllMovieList() {
             headers.map((h,i) => [String(h).trim().toLowerCase(), i])
         )
 
-        return data
+        const baseList = data.map(r => ({
+            title: r[idx.title],
+            releaseDate: r[idx["release date (sort)"]],
+            chronologicalOrder: r[idx["original chron. order"]],
+        })).map(mapRowToMovie).filter(Boolean);
+
+        const overrides = await MovieRepository.getOverridesMap()
+        /*return data
             .map(r => ({
                 title: r[idx.title],
                 releaseDate: r[idx['release date (sort)']],
                 chronologicalOrder: r[idx['original chron. order']],
             }))
             .map(mapRowToMovie)
-            .filter(Boolean);
+            .filter(Boolean);*/
+
+        return baseList.map(m => {
+            const overRidedMovie = overrides.get(m.slug)
+            if (!overRidedMovie) return m;
+            return {
+                ...m,
+                title: overRidedMovie.title ?? m.title,
+                releaseDate: overRidedMovie.releaseDate ?? m.releaseDate,
+                chronologicalOrder: typeof ov.chronologicalOrder === 'number' ? ov.chronologicalOrder : m.chronologicalOrder,
+            }
+        });
     }catch (e) {
         console.error(e)
         return [];
@@ -39,5 +59,40 @@ export async function getMovieBySlugOrTitleService(title) {
     } catch (error) {
         console.error(error);
         return null;
+    }
+}
+
+export async function updateMovieService(idOrTitle, { title, releaseDate, chronologicalOrder, updatedBy }) {
+    const actual = await getMovieBySlugOrTitleService(idOrTitle);
+
+    if(!actual) throw new Error (ERR_MESSAGES.movieNotFound);
+
+    const newTitle = typeof title === 'string' && title.trim().length ? title.trim() : actual.title;
+
+    const newReleaseDate = typeof releaseDate === 'string' && releaseDate.trim().length ? releaseDate.trim() : actual.releaseDate;
+
+    const newOrder = typeof chronologicalOrder === 'number' ? chronologicalOrder : chronologicalOrder != null ? Number(chronologicalOrder) : actual.chronologicalOrder;
+
+    const newSlug = slugify(newTitle);
+
+    if (newSlug !== actual.slug) {
+        const existe = await MovieRepository.findMovieToOverride(newSlug);
+        if (existe) throw new Error(ERR_MESSAGES.existingMovie);
+    }
+
+    const saved = await MovieRepository.upsertOverride({
+        slug: newSlug,
+        title: newTitle,
+        releaseDate: newReleaseDate,
+        chronologicalOrder: Number.isFinite(newOrder) ? newOrder : undefined,
+        updatedBy
+    })
+
+    return {
+        ...actual,
+        slug: saved.slug,
+        title: saved.title,
+        releaseDate: saved.releaseDate,
+        chronologicalOrder: typeof saved.chronologicalOrder === 'number' ? saved.chronologicalOrder : actual.chronologicalOrder,
     }
 }

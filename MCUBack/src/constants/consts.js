@@ -14,6 +14,7 @@ export const ERR_MESSAGES = {
     ratingValidRange: (min, max) => `Rating must be a number between ${MIN_RATING} and ${MAX_RATING}`,
     movieNotFound: "Movie not found",
     duplicateReview: "This movie has already reviewed by you",
+    existingMovie: "This movie has already existed",
 }
 
 export const RATING_VALUES = {
