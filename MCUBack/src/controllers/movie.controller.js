@@ -1,8 +1,8 @@
-import { getAllMovies, getMovie } from "../services/movie.service.js";
+import { getAllMovieList, getMovie } from "../services/movie.service.js";
 
-export async function getAllMovieList(req, res) {
+export async function getAllMovies(req, res) {
     try {
-        const movies = await getAllMovies();
+        const movies = await getAllMovieList();
         res.json(movies);
     } catch (error) {
         console.error(error);
