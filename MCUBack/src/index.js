@@ -1,15 +1,15 @@
-import express from 'express';
 import dotenv from 'dotenv';
-import fs from 'fs';
+import express from 'express';
+import cors from 'cors';
 
 import routes from '../src/routes/index.js'; // <- un solo punto de entrada de rutas
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-const readDate = () => {
+
+/*const readDate = () => {
     try {
         return fs.readFileSync('date.txt', 'utf8').trim();
     } catch (error) {
@@ -17,14 +17,20 @@ const readDate = () => {
         return 'unknown date';
     }
 };
-
+*/
 app.use(express.json());
-
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'x-role', 'x-user'],
+    })
+);
 // raíz informativa
 app.get('/', (req, res) => {
     res.json({
         message: 'Welcome to the Movie API',
-        date: readDate(),
+        date: new Date(),
         endpoints: [
             '/movies',
             '/movies/:title',
@@ -39,6 +45,4 @@ app.get('/', (req, res) => {
 // monta todas las rutas de la app
 app.use(routes);
 
-app.listen(PORT, () => {
-    console.log(`Server running on port: ${PORT}`);
-});
+export default app;

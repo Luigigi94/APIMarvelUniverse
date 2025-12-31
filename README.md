@@ -15,7 +15,7 @@ Esta es una API backend construida con **Node.js** que genera una API RESTful a 
 1. **Clona el repositorio**:
 
    git clone https://github.com/tu-usuario/marvel-universe-api.git
-   cd marvel-universe-api
+   cd marvel-universe-http
 
 2. **Instala las dependencias**:
     npm install
@@ -51,7 +51,7 @@ Esta es una API backend construida con **Node.js** que genera una API RESTful a 
     curl http://localhost:3000/movies
 
 ## Estructura del proyecto
-marvel-universe-api/
+marvel-universe-http/
 │
 ├── data/                  # Carpeta donde se encuentra el archivo Excel (MarvelData.xlsx)
 ├── src/                   # Código fuente de la aplicación

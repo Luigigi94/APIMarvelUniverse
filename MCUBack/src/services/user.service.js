@@ -31,18 +31,15 @@ export class UserService {
         const exists = await UserRepository.findByUsername(username);
         if (exists) throw new Error('User already exists');
 
-        const _id = crypto.randomUUID();
         const { salt, hash } = hashPassword(password);
 
-        await UserRepository.create({
-            _id,
+        const created = await UserRepository.create({
             username: username.trim(),
             password: hash,
-            salt,
-            createdAt: new Date().toISOString(),
+            salt
         });
 
-        return { id: _id, username };
+        return { id: created._id, username: created.username };
     }
 
     static async login({ username, password }) {
@@ -55,6 +52,6 @@ export class UserService {
         if (!ok) throw new Error('Invalid username or password');
 
         // Aquí podrías emitir un JWT; por ahora devolvemos un payload básico
-        return { id: user._id, username: user.username };
+        return { id: user.id, username: user.username };
     }
 }

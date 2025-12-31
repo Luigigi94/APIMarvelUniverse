@@ -21,4 +21,8 @@ export const listMovieReviews = async (req, res, next) =>{
     }
 }
 
+export const getAllReviews = async (req, res, next) =>{
+
+}
+
 //G7105449474

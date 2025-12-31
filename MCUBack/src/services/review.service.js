@@ -15,6 +15,10 @@ function assertPayload({ titleOrId, username, rating }) {
     if(!Number.isFinite(n) || n < MIN_RATING || n > MAX_RATING) throw new Error(ERR_MESSAGES.ratingValidRange(MIN_RATING, MAX_RATING))
 }
 
+function getAllReviews() {
+
+}
+
 export class ReviewService {
     static async addReview({ titleOrId, username, rating, text }) {
         console.log("userName", username)
@@ -48,4 +52,6 @@ export class ReviewService {
         const reviews = await ReviewRepository.findByMovieId(movie.slug);
         return { movieId: movie.slug, reviews };
     }
+
+
 }
